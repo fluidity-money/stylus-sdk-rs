@@ -30,6 +30,7 @@ pub fn external(_attr: TokenStream, input: TokenStream) -> TokenStream {
         let mut purity = None;
         let mut override_id = None;
         let mut override_name = None;
+        let mut raw_method = false;
         for attr in mem::take(&mut method.attrs) {
             let Some(ident) = attr.path.get_ident() else {
                 continue;
@@ -54,6 +55,10 @@ pub fn external(_attr: TokenStream, input: TokenStream) -> TokenStream {
                 };
                 override_id = args.id;
                 override_name = args.name;
+                continue;
+            }
+            if *ident == "raw" {
+                raw_method = true;
                 continue;
             }
             method.attrs.push(attr);
@@ -142,10 +147,12 @@ pub fn external(_attr: TokenStream, input: TokenStream) -> TokenStream {
             const #constant: u32 = #selector;
         });
 
-        // match against the selector
-        match_selectors.extend(quote! {
-            #[allow(non_upper_case_globals)]
-            #constant => {
+        let call = if raw_method {
+            quote! {
+                Self::#name(#storage input)
+            }
+        } else {
+            quote! {
                 #deny_value
                 let args = match <<( #( #arg_types, )* ) as AbiType>::SolType as SolType>::decode(input, true) {
                     Ok(args) => args,
@@ -159,6 +166,14 @@ pub fn external(_attr: TokenStream, input: TokenStream) -> TokenStream {
                     Ok(result) => Some(Ok(internal::encode_return_type(result))),
                     Err(err) => Some(Err(err.into())),
                 }
+            }
+        };
+
+        // match against the selector
+        match_selectors.extend(quote! {
+            #[allow(non_upper_case_globals)]
+            #constant => {
+                #call
             }
         });
 

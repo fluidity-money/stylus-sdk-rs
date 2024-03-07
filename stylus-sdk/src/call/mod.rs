@@ -14,7 +14,10 @@
 use alloc::vec::Vec;
 use alloy_primitives::Address;
 
-pub use self::{context::Call, error::Error, raw::RawCall, traits::*, transfer::transfer_eth};
+pub use self::{
+    context::Call, error::Error, error::MethodError, raw::RawCall, traits::*,
+    transfer::transfer_eth,
+};
 
 pub(crate) use raw::CachePolicy;
 
@@ -71,7 +74,7 @@ pub unsafe fn delegate_call(
     #[cfg(all(feature = "storage-cache", feature = "reentrant"))]
     Storage::clear(); // clear the storage to persist changes, invalidating the cache
 
-    RawCall::new_with_value(context.value())
+    RawCall::new_delegate()
         .gas(context.gas())
         .call(to, data)
         .map_err(Error::Revert)

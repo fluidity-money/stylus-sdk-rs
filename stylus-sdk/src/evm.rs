@@ -53,7 +53,7 @@ pub fn log<T: SolEvent>(event: T) {
 
 /// This function exists to force the compiler to import this symbol.
 /// Calling it will unproductively consume gas.
-pub fn memory_grow(pages: u16) {
+pub fn pay_for_memory_grow(pages: u16) {
     unsafe { hostio::memory_grow(pages) }
 }
 
@@ -67,6 +67,6 @@ wrap_hostio!(
 wrap_hostio!(
     /// Gets the amount of ink remaining. See [`Ink and Gas`] for more information on Stylus's compute pricing.
     ///
-    /// [`Ink and Gas`]: https://developer.arbitrum.io/TODO
+    /// [`Ink and Gas`]: https://docs.arbitrum.io/stylus/concepts/stylus-gas
     ink_left evm_ink_left u64
 );

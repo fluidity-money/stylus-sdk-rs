@@ -247,8 +247,8 @@ version = "0.1.0"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",
+ "mini-alloc",
  "stylus-sdk",
- "wee_alloc",
 ]
 
 [[package]]
@@ -379,6 +379,14 @@ name = "memory_units"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
+
+[[package]]
+name = "mini-alloc"
+version = "0.4.3"
+dependencies = [
+ "cfg-if 1.0.0",
+ "wee_alloc",
+]
 
 [[package]]
 name = "num-traits"
@@ -624,10 +632,11 @@ dependencies = [
 
 [[package]]
 name = "stylus-proc"
-version = "0.1.0"
+version = "0.4.3"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",
+ "cfg-if 1.0.0",
  "convert_case 0.6.0",
  "lazy_static",
  "proc-macro2",
@@ -640,10 +649,11 @@ dependencies = [
 
 [[package]]
 name = "stylus-sdk"
-version = "0.1.0"
+version = "0.4.3"
 dependencies = [
  "alloy-primitives",
  "alloy-sol-types",
+ "cfg-if 1.0.0",
  "derivative",
  "fnv",
  "hex",

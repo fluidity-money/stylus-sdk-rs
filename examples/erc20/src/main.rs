@@ -5,8 +5,9 @@ use crate::erc20::{Erc20, Erc20Params};
 use alloc::{string::String, vec::Vec};
 use stylus_sdk::{alloy_primitives::U256, call, msg, prelude::*};
 
+#[cfg(target_arch = "wasm32")]
 #[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 mod erc20;
 
@@ -39,21 +40,20 @@ sol_interface! {
 #[inherit(Erc20<WethParams>)]
 impl Weth {
     #[payable]
-    pub fn deposit(&mut self) -> Result<(), Vec<u8>> {
+    pub fn deposit(&mut self) {
         self.erc20.mint(msg::sender(), msg::value());
-        Ok(())
     }
 
     pub fn withdraw(&mut self, amount: U256) -> Result<(), Vec<u8>> {
         self.erc20.burn(msg::sender(), amount)?;
 
         // send the user their funds
-        call::transfer_eth(self, msg::sender(), amount)
+        call::transfer_eth(msg::sender(), amount)
     }
 
     // sums numbers
-    pub fn sum(values: Vec<U256>) -> Result<(String, U256), Vec<u8>> {
-        Ok(("sum".into(), values.iter().sum()))
+    pub fn sum(values: Vec<U256>) -> (String, U256) {
+        ("sum".into(), values.iter().sum())
     }
 
     // calls the sum() method from the interface

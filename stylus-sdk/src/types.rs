@@ -37,19 +37,19 @@ pub trait AddressVM {
 impl AddressVM for Address {
     fn balance(&self) -> U256 {
         let mut data = [0; 32];
-        unsafe { hostio::account_balance(self.0.as_ptr(), data.as_mut_ptr()) };
+        unsafe { hostio::account_balance(self.as_ptr(), data.as_mut_ptr()) };
         U256::from_be_bytes(data)
     }
 
     fn codehash(&self) -> B256 {
         let mut data = [0; 32];
-        unsafe { hostio::account_codehash(self.0.as_ptr(), data.as_mut_ptr()) };
+        unsafe { hostio::account_codehash(self.as_ptr(), data.as_mut_ptr()) };
         data.into()
     }
 
     fn has_code(&self) -> bool {
         let hash = self.codehash();
-        hash.is_zero()
-            || hash == b256!("c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470")
+        !hash.is_zero()
+            && hash != b256!("c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470")
     }
 }

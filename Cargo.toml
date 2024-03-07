@@ -1,9 +1,9 @@
 [workspace]
-members = ["stylus-sdk", "stylus-proc"]
+members = ["stylus-sdk", "stylus-proc", "mini-alloc"]
 resolver = "2"
 
 [workspace.package]
-version = "0.4.1"
+version = "0.4.3"
 edition = "2021"
 authors = ["Offchain Labs"]
 license = "MIT OR Apache-2.0"
